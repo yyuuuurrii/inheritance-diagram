@@ -1,0 +1,108 @@
+{
+  "decedent": "A",
+  "creator": {
+    "title": "司法書士"
+  },
+  "interpretation_notes": [
+    "被相続人Aは「夫B」とあるため女性と解釈しました",
+    "G＝D、H＝Eは同一人物として1人ずつで作成しました（Cの実子であり、かつAの養女）",
+    "D・Eの父はCの夫Fと解釈しました（文中に明記なし。Aの相続人・相続分には影響しません）",
+    "D・E・Fの養親はAのみと解釈しました（Bが縁組時に生存していれば夫婦共同縁組の可能性あり。Bは先に死亡しているためAの相続には影響しません）",
+    "Cは生存しているため、D・Eに代襲相続は生じず、二重資格にはなりません（養子としての資格のみ）"
+  ],
+  "persons": [
+    {
+      "id": "A",
+      "name": "見本　安子",
+      "sex": "F",
+      "birth": "S5.1.23",
+      "death": "R5.3.7"
+    },
+    {
+      "id": "B",
+      "name": "見本　文男",
+      "sex": "M",
+      "death": "H12.8.10"
+    },
+    {
+      "id": "C",
+      "name": "見本　知子",
+      "sex": "F",
+      "birth": "S40.12.17",
+      "relation": "長女"
+    },
+    {
+      "id": "F",
+      "name": "見本　史郎",
+      "sex": "M",
+      "birth": "S38.11.10",
+      "relation": "養子"
+    },
+    {
+      "id": "D",
+      "name": "見本　大子",
+      "sex": "F",
+      "birth": "H2.6.25",
+      "relation": "養女"
+    },
+    {
+      "id": "E",
+      "name": "見本　恵子",
+      "sex": "F",
+      "birth": "H9.2.17",
+      "relation": "養女"
+    }
+  ],
+  "marriages": [
+    {
+      "a": "B",
+      "b": "A"
+    },
+    {
+      "a": "F",
+      "b": "C"
+    }
+  ],
+  "parent_child": [
+    {
+      "parent": "B",
+      "child": "C"
+    },
+    {
+      "parent": "A",
+      "child": "C"
+    },
+    {
+      "parent": "F",
+      "child": "D"
+    },
+    {
+      "parent": "C",
+      "child": "D"
+    },
+    {
+      "parent": "F",
+      "child": "E"
+    },
+    {
+      "parent": "C",
+      "child": "E"
+    },
+    {
+      "parent": "A",
+      "child": "F",
+      "type": "adopted"
+    },
+    {
+      "parent": "A",
+      "child": "D",
+      "type": "adopted"
+    },
+    {
+      "parent": "A",
+      "child": "E",
+      "type": "adopted"
+    }
+  ],
+  "created_date": "R8.11.6"
+}

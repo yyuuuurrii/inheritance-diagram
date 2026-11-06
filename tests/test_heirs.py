@@ -136,3 +136,17 @@ def test_build_outputs(ex, tmp_path):
         assert (tmp_path / f).exists(), f
     md = (tmp_path / "確認チェックリスト.md").read_text(encoding="utf-8")
     assert "判定結果" in md and "目視チェック" in md
+
+
+def test_mukoyoshi_and_grandchildren_adopted_while_parent_alive():
+    """婿養子＋孫2人を養子（実親Cは生存）: 子4人で各1/4、二重資格なし。説明図で参照は1回ずつ。"""
+    from souzoku_zu.diagrams import setsumeizu
+    c = Case.load(EX / "05_mukoyoshi_magoyoshi.json")
+    r = determine(c)
+    assert r.shares == {"F": F(1, 4), "C": F(1, 4), "D": F(1, 4), "E": F(1, 4)}
+    assert not any("二重資格" in w for w in r.warnings)
+    dia, _ = setsumeizu(c)
+    refs = [b.pid for b in dia.drawing.boxes if b.ref]
+    assert sorted(refs) == ["D", "E"]
+    texts = " ".join(t.text for b in dia.drawing.boxes for t in b.lines)
+    assert "二重資格" not in texts

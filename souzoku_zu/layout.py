@@ -135,6 +135,7 @@ class Unit:
     parent: "Unit | None" = None
     gkey: frozenset = frozenset()
     sib_spouse: str | None = None   # 同じ親の下に並ぶ兄弟と婚姻（婿養子・嫁養子など）
+    sib_below: bool = True          # その相手が自分の下に並ぶか
 
 
 def build_tree(spec: Spec) -> tuple[list[Unit], list[str]]:
@@ -165,15 +166,21 @@ def build_tree(spec: Spec) -> tuple[list[Unit], list[str]]:
         while queue:
             u = queue.pop(0)
             members = {u.head}
+            upper_partner = None   # 自分が兄弟間婚姻の「下側」のとき、上側の相手
             for a, b in marr:
                 if u.head in (a, b):
                     s = b if a == u.head else a
                     su = placed.get(s)
                     if su is not None and su.head == s and su.parent is not None \
-                            and su.parent is u.parent and su.gkey == u.gkey:
-                        # 兄弟どうしの婚姻: 隣に並べて二重線で結ぶ（参照ボックスを作らない）
-                        if su.sib_spouse != u.head:
+                            and su.parent is u.parent:
+                        # 同じ親の下に並ぶ者どうしの婚姻（婿養子・嫁養子など）:
+                        # 隣に並べて二重線で結ぶ（参照ボックスを作らない）。
+                        # 2人の子は上側の人の下に1回だけ描く
+                        if su.sib_spouse == u.head:
+                            upper_partner = s
+                        else:
                             u.sib_spouse = s
+                            members.add(s)
                         continue
                     if su is not None and any(sl.pid == u.head for sl in su.spouses):
                         continue  # 相手側ですでに描いている
@@ -186,6 +193,8 @@ def build_tree(spec: Spec) -> tuple[list[Unit], list[str]]:
             kids = set()
             for m in members:
                 kids.update(children_of.get(m, []))
+            if upper_partner:
+                kids = {c for c in kids if upper_partner not in parents_of[c]}
             groups: dict[frozenset, list] = {}
             for c in sorted(kids, key=bkey):
                 key = frozenset(p for p in parents_of[c] if p in members)
@@ -204,15 +213,16 @@ def build_tree(spec: Spec) -> tuple[list[Unit], list[str]]:
         # 兄弟間で婚姻している2人を隣どうしに並べ替える（BFS 終了後に実施）
 
     def _pair_siblings(u: Unit):
-        for gi, (key, members) in enumerate(u.groups):
-            ms = list(members)
+        groups = [(k, list(ms)) for k, ms in u.groups]
+        for _, ms in groups:
             for m in list(ms):
                 if isinstance(m, Unit) and m.sib_spouse:
                     partner = next((x for x in ms if isinstance(x, Unit) and x.head == m.sib_spouse), None)
-                    if partner is not None:
+                    if partner is not None:            # 同じ親の組の中: 隣どうしに
                         ms.remove(partner)
                         ms.insert(ms.index(m) + 1, partner)
-            u.groups[gi] = (key, ms)
+        u.groups = groups
+        for _, ms in groups:
             for m in ms:
                 if isinstance(m, Unit):
                     _pair_siblings(m)
@@ -269,6 +279,31 @@ def layout(spec: Spec, st: Style) -> tuple[Drawing, list[str]]:
     return out, warnings
 
 
+def _pair_across_groups(groups):
+    """親の組が違う者どうしの婚姻（例: 被相続人のみの養子と、夫婦の実子）を、組の境目で隣り合わせる。"""
+    groups = [(k, list(ms)) for k, ms in groups]
+    for gi in range(len(groups)):
+        for m in list(groups[gi][1]):
+            if not (isinstance(m, Unit) and m.sib_spouse):
+                continue
+            gj = next((j for j, (_, ms) in enumerate(groups)
+                       if any(isinstance(x, Unit) and x.head == m.sib_spouse for x in ms)), None)
+            if gj is None or gj == gi:
+                continue
+            partner = next(x for x in groups[gj][1] if isinstance(x, Unit) and x.head == m.sib_spouse)
+            lo, hi = sorted((gi, gj))
+            upper_ms, lower_ms = groups[lo][1], groups[hi][1]
+            a, b = (m, partner) if gi < gj else (partner, m)
+            upper_ms.remove(a)
+            upper_ms.append(a)
+            lower_ms.remove(b)
+            lower_ms.insert(0, b)
+            if hi != lo + 1:
+                groups.insert(lo + 1, groups.pop(hi))
+            m.sib_below = gi < gj   # 相手が下に来るか
+    return groups
+
+
 def _depth(u: Unit) -> int:
     ds = [_depth(m) + 1 for _, ms in u.groups for m in ms if isinstance(m, Unit)]
     ds += [1 for _, ms in u.groups for m in ms if not isinstance(m, Unit)]
@@ -320,6 +355,9 @@ def _layout_unit(spec: Spec, st: Style, u: Unit, depth: int) -> tuple[Drawing, f
             cx = xa
         conn[frozenset({u.head, u.spouses[k].pid})] = (cx, cy)
     conn[frozenset({u.head})] = (x0 + head.name_end + 1.5, head.anchor)
+    if u.sib_spouse:   # 兄弟間婚姻の子は、相手へ伸びる二重線の途中から
+        cy_sib = head.y + head.h + st.sp_gap / 2 if u.sib_below else head.y - st.child_gap / 2
+        conn[frozenset({u.head, u.sib_spouse})] = (x0 + st.dbl_dx + st.dbl_sep, cy_sib)
     for s, sb in zip(u.spouses, sp_boxes):
         conn.setdefault(frozenset({s.pid}), (x0 + sb.name_end + 1.5, sb.anchor))
 
@@ -328,30 +366,34 @@ def _layout_unit(spec: Spec, st: Style, u: Unit, depth: int) -> tuple[Drawing, f
 
     # --- 子のブロックを右の列に縦に並べる
     groups = sorted(u.groups, key=lambda g: conn.get(g[0], conn[frozenset({u.head})])[1])
+    groups = _pair_across_groups(groups)
     child_draw = Drawing()
     anchors: list[list[float]] = []
     cy_acc = 0.0
     xc = x0 + st.box_w + st.col_gap
-    pending_pair: tuple[str, float] | None = None   # (配偶者pid, 二重線の上端y)
-    for _, members in groups:
+    prev: tuple[Unit, float] | None = None   # 直前に積んだユニットと、その本人ボックスの下端y
+    for gkey, members in groups:
         al = []
         for m in members:
             if isinstance(m, Unit):
                 cd, ch = _layout_unit(spec, st, m, depth + 1)
                 head_box = next(b for b in cd.boxes if b.pid == m.head and not b.ref and b.x == xc)
                 al.append(head_box.anchor + cy_acc)
-                if pending_pair and pending_pair[0] == m.head:
-                    xa = xc + st.dbl_dx
-                    for dx in (0, st.dbl_sep):
-                        child_draw.lines.append(Line(xa + dx, pending_pair[1], xa + dx, head_box.y + cy_acc, 0.6))
-                    pending_pair = None
-                if m.sib_spouse:
-                    pending_pair = (m.sib_spouse, head_box.y + head_box.h + cy_acc)
+                if prev is not None:
+                    pu, py = prev
+                    paired = (pu.sib_spouse == m.head and pu.sib_below) or \
+                             (m.sib_spouse == pu.head and not m.sib_below)
+                    if paired:   # 隣り合う夫婦（婿養子など）を二重線で結ぶ
+                        xa = xc + st.dbl_dx
+                        for dx in (0, st.dbl_sep):
+                            child_draw.lines.append(Line(xa + dx, py, xa + dx, head_box.y + cy_acc, 0.6))
+                prev = (m, head_box.y + head_box.h + cy_acc)
             else:
-                rb = make_box(spec, st, m.pid, ref=True, role="child")
+                rb = make_box(spec, st, m.pid, ref=True, role="child:" + ",".join(sorted(gkey)))
                 rb.x = xc
                 cd, ch = Drawing([rb]), rb.h
                 al.append(rb.anchor + cy_acc)
+                prev = None
             child_draw.extend(cd.shift(0, cy_acc))
             cy_acc += ch + st.child_gap
         anchors.append(al)

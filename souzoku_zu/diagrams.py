@@ -92,6 +92,22 @@ def relation(case: Case, fam: Family, ctx: str, pid: str, *,
     return "続柄不明", True
 
 
+def _ref_lines(fam: Family, res: HeirResult, pid: str, role: str):
+    """2か所目に出る人物の参照ボックス。"""
+    p = fam.p[pid]
+    if role == "spouse":
+        lab = {"F": "妻", "M": "夫"}.get(p.sex, "配偶者")
+        out = [(f"（{lab}）", "label")]
+    else:
+        parents = [x for x in role.partition(":")[2].split(",") if x]
+        who = "・".join(_compact(fam.p[x].name) for x in parents)
+        out = [(f"（{who}の子）" if who else "（子）", "label")]
+    out += [(p.name, "name"), ("※前掲と同一人", "s")]
+    if len(res.routes.get(pid, [])) > 1:
+        out.append(("（二重資格）", "s"))
+    return out
+
+
 def _compact(name: str) -> str:
     return name.replace("　", "").replace(" ", "")
 
@@ -149,6 +165,7 @@ def ichiranzu(case: Case, decedent: str | None = None) -> tuple[Diagram, HeirRes
     fam = Family(case)
     did = decedent or case.decedent
     res = determine(case, did, respect_renunciation=False)
+    res_main = res
     d = fam.p[did]
     style = case.options.child_relation_style
     auto: list[str] = []
@@ -184,11 +201,7 @@ def ichiranzu(case: Case, decedent: str | None = None) -> tuple[Diagram, HeirRes
         return out
 
     def ref_lines_of(pid, role):
-        p = fam.p[pid]
-        if role == "spouse":
-            lab = {"F": "妻", "M": "夫"}.get(p.sex, "配偶者")
-            return [(f"（{lab}）", "label"), (p.name, "name"), ("※前掲と同一人", "s")]
-        return [("（二重資格）", "label"), (p.name, "name"), ("※前掲と同一人", "s")]
+        return _ref_lines(fam, res_main, pid, role)
 
     spec = Spec(persons=_order(case, shown), marriages=marriages, edges=edges,
                 root=_root(fam, did, shown), lines_of=lines_of, ref_lines_of=ref_lines_of,
@@ -241,6 +254,7 @@ def setsumeizu(case: Case) -> tuple[Diagram, list[HeirResult]]:
         todo += secondary_decedents(case, r_kos)
 
     main = results[0]
+    res_main = main
     edges = [(pc.parent, pc.child) for pc in case.parent_child
              if pc.parent in shown and pc.child in shown]
     marriages = _marriage_pairs(fam, shown, include_divorced=True, at=d.death)
@@ -293,11 +307,7 @@ def setsumeizu(case: Case) -> tuple[Diagram, list[HeirResult]]:
         return out
 
     def ref_lines_of(pid, role):
-        p = fam.p[pid]
-        if role == "spouse":
-            lab = {"F": "妻", "M": "夫"}.get(p.sex, "配偶者")
-            return [(f"（{lab}）", "label"), (p.name, "name"), ("※前掲と同一人", "s")]
-        return [("（二重資格）", "label"), (p.name, "name"), ("※前掲と同一人", "s")]
+        return _ref_lines(fam, res_main, pid, role)
 
     st = _style(case, landscape=True)
     spec = Spec(persons=_order(case, shown), marriages=marriages, edges=edges,
