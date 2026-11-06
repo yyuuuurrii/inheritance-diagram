@@ -1,0 +1,40 @@
+{
+  "decedent": "taro",
+  "created_date": "令和7年11月6日",
+  "creator": {"title": "司法書士", "name": "見本 一郎", "address": "東京都千代田区九段南一丁目1番15号"},
+  "interpretation_notes": [
+    "「前妻 秋子との間の子 夏男」を、太郎と秋子の実子と解釈しました",
+    "「次郎は孫だが養子にしている」を、一郎の実子かつ太郎・花子の養子と解釈しました"
+  ],
+  "persons": [
+    {"id": "taro", "name": "法務　太郎", "sex": "M", "birth": "S15.1.1", "death": "R6.3.1",
+     "address": "東京都千代田区九段南一丁目1番10号", "honseki": "東京都千代田区九段南一丁目2番"},
+    {"id": "akiko", "name": "前田　秋子", "sex": "F", "birth": "S17.2.2", "relation": "元妻"},
+    {"id": "natsuo", "name": "前田　夏男", "sex": "M", "birth": "S40.4.4", "address": "大阪府大阪市北区西天満二丁目1番5号", "relation": "長男", "renounced": true},
+    {"id": "hanako", "name": "法務　花子", "sex": "F", "birth": "S20.5.5", "death": "R7.1.10",
+     "address": "東京都千代田区九段南一丁目1番10号", "relation": "妻"},
+    {"id": "ichiro", "name": "法務　一郎", "sex": "M", "birth": "S47.10.1", "death": "H30.6.1", "relation": "二男"},
+    {"id": "yoshiko", "name": "法務　良子", "sex": "F", "birth": "S49.3.3", "address": "東京都新宿区新宿一丁目1番1号"},
+    {"id": "jiro", "name": "法務　次郎", "sex": "M", "birth": "H12.8.8", "address": "東京都新宿区新宿一丁目1番1号", "relation": "養子", "applicant": true},
+    {"id": "sakura", "name": "法務　さくら", "sex": "F", "birth": "H15.9.9", "address": "東京都新宿区新宿一丁目1番1号"},
+    {"id": "haruko", "name": "登記　春子", "sex": "F", "birth": "S50.2.3", "address": "神奈川県横浜市中区北仲通五丁目57番地", "relation": "長女"},
+    {"id": "kenji", "name": "登記　健司", "sex": "M", "birth": "S48.7.7", "address": "神奈川県横浜市中区北仲通五丁目57番地", "relation": "養子"}
+  ],
+  "marriages": [
+    {"a": "taro", "b": "akiko", "date": "S38.1.1", "divorced": "S45.3.1"},
+    {"a": "taro", "b": "hanako", "date": "S46.4.1"},
+    {"a": "ichiro", "b": "yoshiko", "date": "H10.5.1"},
+    {"a": "haruko", "b": "kenji", "date": "H9.4.1"}
+  ],
+  "parent_child": [
+    {"parent": "taro", "child": "natsuo"}, {"parent": "akiko", "child": "natsuo"},
+    {"parent": "taro", "child": "ichiro"}, {"parent": "hanako", "child": "ichiro"},
+    {"parent": "taro", "child": "haruko"}, {"parent": "hanako", "child": "haruko"},
+    {"parent": "ichiro", "child": "jiro"}, {"parent": "yoshiko", "child": "jiro"},
+    {"parent": "ichiro", "child": "sakura"}, {"parent": "yoshiko", "child": "sakura"},
+    {"parent": "taro", "child": "jiro", "type": "adopted", "date": "H25.1.1"},
+    {"parent": "hanako", "child": "jiro", "type": "adopted", "date": "H25.1.1"},
+    {"parent": "taro", "child": "kenji", "type": "adopted", "date": "H9.4.1"},
+    {"parent": "hanako", "child": "kenji", "type": "adopted", "date": "H9.4.1"}
+  ]
+}

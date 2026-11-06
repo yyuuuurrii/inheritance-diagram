@@ -1,0 +1,31 @@
+{
+  "decedent": "taro",
+  "created_date": "R7.11.6",
+  "creator": {"title": "司法書士", "name": "見本 一郎", "address": "東京都千代田区九段南一丁目1番15号"},
+  "interpretation_notes": ["「異母弟の三郎」を、父 法務一男と後妻 冬子の子と解釈しました"],
+  "persons": [
+    {"id": "father", "name": "法務　一男", "sex": "M", "birth": "T10.1.1", "death": "S60.1.1"},
+    {"id": "mother", "name": "法務　梅", "sex": "F", "birth": "T12.1.1", "death": "S50.1.1"},
+    {"id": "fuyuko", "name": "法務　冬子", "sex": "F", "birth": "S5.1.1", "death": "H20.1.1"},
+    {"id": "taro", "name": "法務　太郎", "sex": "M", "birth": "S25.1.1", "death": "R7.2.1",
+     "address": "東京都千代田区九段南一丁目1番10号", "honseki": "東京都千代田区九段南一丁目2番"},
+    {"id": "hanako", "name": "法務　花子", "sex": "F", "birth": "S28.1.1", "address": "東京都千代田区九段南一丁目1番10号", "applicant": true},
+    {"id": "yuki", "name": "雪野　雪子", "sex": "F", "birth": "S22.3.3", "address": "千葉県千葉市中央区市場町1番1号"},
+    {"id": "jiro", "name": "法務　二郎", "sex": "M", "birth": "S27.3.3", "death": "H25.1.1"},
+    {"id": "oi", "name": "法務　甥男", "sex": "M", "birth": "S55.5.5", "address": "埼玉県さいたま市浦和区高砂三丁目15番1号"},
+    {"id": "mei", "name": "法務　姪子", "sex": "F", "birth": "S58.5.5", "address": "埼玉県さいたま市浦和区高砂三丁目15番1号"},
+    {"id": "saburo", "name": "法務　三郎", "sex": "M", "birth": "S52.7.7", "address": "東京都八王子市元本郷町三丁目24番1号"}
+  ],
+  "marriages": [
+    {"a": "father", "b": "mother", "date": "S21.1.1"},
+    {"a": "father", "b": "fuyuko", "date": "S51.1.1"},
+    {"a": "taro", "b": "hanako", "date": "S55.1.1"}
+  ],
+  "parent_child": [
+    {"parent": "father", "child": "yuki"}, {"parent": "mother", "child": "yuki"},
+    {"parent": "father", "child": "taro"}, {"parent": "mother", "child": "taro"},
+    {"parent": "father", "child": "jiro"}, {"parent": "mother", "child": "jiro"},
+    {"parent": "jiro", "child": "oi"}, {"parent": "jiro", "child": "mei"},
+    {"parent": "father", "child": "saburo"}, {"parent": "fuyuko", "child": "saburo"}
+  ]
+}

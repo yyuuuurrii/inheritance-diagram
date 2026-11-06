@@ -1,0 +1,6 @@
+# 実案件の個人情報はコミットしない
+cases/
+output/
+__pycache__/
+.pytest_cache/
+*.pyc

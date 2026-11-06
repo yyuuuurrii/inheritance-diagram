@@ -1,0 +1,20 @@
+{
+  "decedent": "taro",
+  "created_date": "令和7年11月6日",
+  "creator": {"title": "司法書士", "name": "見本 一郎", "address": "東京都千代田区九段南一丁目1番15号"},
+  "persons": [
+    {"id": "taro", "name": "法務　太郎", "sex": "M", "birth": "昭和20年1月1日", "death": "令和7年4月1日",
+     "address": "東京都千代田区九段南一丁目1番10号", "honseki": "東京都千代田区九段南一丁目2番"},
+    {"id": "hanako", "name": "法務　花子", "sex": "F", "birth": "昭和23年5月5日",
+     "address": "東京都千代田区九段南一丁目1番10号", "relation": "妻", "applicant": true},
+    {"id": "ichiro", "name": "法務　一郎", "sex": "M", "birth": "昭和48年10月1日",
+     "address": "東京都千代田区九段南二丁目3番4号", "relation": "長男"},
+    {"id": "haruko", "name": "登記　春子", "sex": "F", "birth": "昭和51年2月3日",
+     "address": "神奈川県横浜市中区北仲通五丁目57番地", "relation": "長女"}
+  ],
+  "marriages": [{"a": "taro", "b": "hanako", "date": "昭和47年3月1日"}],
+  "parent_child": [
+    {"parent": "taro", "child": "ichiro"}, {"parent": "hanako", "child": "ichiro"},
+    {"parent": "taro", "child": "haruko"}, {"parent": "hanako", "child": "haruko"}
+  ]
+}

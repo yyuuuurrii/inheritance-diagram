@@ -1,0 +1,18 @@
+{
+  "decedent": "ken",
+  "created_date": "R7.11.6",
+  "creator": {"title": "司法書士", "name": "見本 一郎", "address": "東京都千代田区九段南一丁目1番15号"},
+  "persons": [
+    {"id": "ken", "name": "相続　健一", "sex": "M", "birth": "S60.4.1", "death": "R7.8.15",
+     "address": "東京都港区芝公園四丁目2番8号", "honseki": "東京都港区芝公園四丁目2番"},
+    {"id": "wife", "name": "相続　舞", "sex": "F", "birth": "S62.6.1", "address": "東京都港区芝公園四丁目2番8号", "applicant": true},
+    {"id": "son", "name": "相続　翔", "sex": "M", "birth": "H25.1.1", "address": "東京都港区芝公園四丁目2番8号", "relation": "長男", "renounced": true},
+    {"id": "fa", "name": "相続　正", "sex": "M", "birth": "S30.1.1", "address": "静岡県静岡市葵区追手町9番6号"},
+    {"id": "mo", "name": "相続　和子", "sex": "F", "birth": "S32.1.1", "address": "静岡県静岡市葵区追手町9番6号"}
+  ],
+  "marriages": [{"a": "ken", "b": "wife", "date": "H24.1.1"}, {"a": "fa", "b": "mo"}],
+  "parent_child": [
+    {"parent": "ken", "child": "son"}, {"parent": "wife", "child": "son"},
+    {"parent": "fa", "child": "ken"}, {"parent": "mo", "child": "ken"}
+  ]
+}
