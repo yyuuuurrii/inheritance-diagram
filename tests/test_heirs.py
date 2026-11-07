@@ -150,3 +150,10 @@ def test_mukoyoshi_and_grandchildren_adopted_while_parent_alive():
     assert sorted(refs) == ["D", "E"]
     texts = " ".join(t.text for b in dia.drawing.boxes for t in b.lines)
     assert "二重資格" not in texts
+
+
+def test_explanation_has_refund_note_and_ichiran_does_not():
+    from souzoku_zu.diagrams import ichiranzu, setsumeizu
+    c = Case.load(EX / "01_basic.json")
+    assert setsumeizu(c)[0].notes == ["相続に関する書類は還付した"]
+    assert ichiranzu(c)[0].notes == []

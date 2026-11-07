@@ -27,6 +27,7 @@ class Diagram:
     landscape: bool
     reserve_bottom_mm: float = 0.0
     trailing: str = ""       # 「以下余白」
+    notes: list[str] = field(default_factory=list)   # 図の下の余白に入れる文言（作成日の前）
     warnings: list[str] = field(default_factory=list)
     auto_labels: list[str] = field(default_factory=list)
 
@@ -317,5 +318,6 @@ def setsumeizu(case: Case) -> tuple[Diagram, list[HeirResult]]:
     created = case.created_date or dt.date.today()
     dia = Diagram("setsumei", did, f"被相続人　{d.name}　相続関係説明図", drawing,
                   _creator_footer(case, created), landscape=True, warnings=lw,
+                  notes=[case.options.explanation_note] if case.options.explanation_note else [],
                   auto_labels=list(dict.fromkeys(auto)))
     return dia, results

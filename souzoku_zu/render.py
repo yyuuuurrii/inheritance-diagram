@@ -40,7 +40,7 @@ def compose(dia: Diagram, font: str = "mincho") -> tuple[Page, list[str]]:
     notes: list[str] = []
     x0, y0, x1, y1 = dia.drawing.bbox()
     cw, ch = x1 - x0, y1 - y0
-    footer_h = len(dia.footer) * 11 * PT * 1.35 + 14
+    footer_h = (len(dia.footer) + len(dia.notes)) * 11 * PT * 1.35 + 18
 
     top = MARGIN + 17
 
@@ -80,6 +80,12 @@ def compose(dia: Diagram, font: str = "mincho") -> tuple[Page, list[str]]:
         dr.boxes.append(t)
         yb += t.h
     yb += 6
+    for line in dia.notes:
+        b = _text_box(line, 10.5, max(MARGIN, left), yb, font)
+        dr.boxes.append(b)
+        yb += b.h
+    if dia.notes:
+        yb += 4
     for line in dia.footer:
         b = _text_box(line, 10, max(MARGIN, left), yb, font)
         dr.boxes.append(b)

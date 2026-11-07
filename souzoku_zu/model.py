@@ -96,6 +96,9 @@ class Options(BaseModel):
     show_heir_address: bool = Field(True, description="一覧図に相続人の住所を書くか")
     show_shares_in_explanation: bool = Field(False, description="説明図に法定相続分を書くか")
     font: Literal["mincho", "gothic"] = "mincho"
+    explanation_note: str = Field(
+        "相続に関する書類は還付した",
+        description="相続関係説明図の末尾（図の下の余白）に入れる文言。空文字なら入れない")
 
 
 class Case(BaseModel):
